@@ -100,6 +100,24 @@ class TestClient < Test::Unit::TestCase
         end
       end
 
+      context "when sending an email to a contact" do
+        teardown do
+          # @client.remove_contact('longbob@longbob.com')
+        end
+
+        should "respond with a success" do
+          @client.add_contact(
+            :email => 'russ@bashme.org',
+            :firstname => 'Longbob',
+            :lastname => 'Longson',
+            :mailing_lists => 'MainList')
+
+          response = @client.send_list_edition_to_contact('MainList', 'Testing', 'russ@bashme.org')
+
+          assert_equal true, response.success?
+        end
+      end
+
       context "when there is an error" do
         setup do
           @client = EROI.new('wrong', 'credentials')

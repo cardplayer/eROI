@@ -39,13 +39,24 @@ module EROI
         :clear_record => 1 ))
     end
 
+    def send_list_edition_to_contact(list, edition, email)
+      emails = ((email.is_a?(String)) ? [ email ] : email).join(',')
+
+      xml = Builder::XmlMarkup.new
+      xml.tag!('Send', emails, 'List' => list, 'Edition' => edition)
+
+      Request::Post.send(self, xml)
+    end
+
+    alias :send_list_edition_to_contacts :send_list_edition_to_contact
+
   private
 
     def build_contact_record(fields)
       xml = Builder::XmlMarkup.new
-      xml.tag!('Record') do |r|
+      xml.tag!('Record') do |x|
         fields.each do |k,v|
-          r.tag!(k.to_s.camelize, v)
+          x.tag!(k.to_s.camelize, v)
         end
       end
       xml

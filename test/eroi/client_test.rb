@@ -75,6 +75,15 @@ class TestClient < Test::Unit::TestCase
       end
     end
 
+    context "when sending an email to a contact" do
+      should "respond with a success" do
+        response = @client.send_list_edition_to_contact('TestList', 'test', 'longbob@longbob.com')
+
+        assert_equal true, response.success?
+        assert_equal 1, response.number_of_records
+      end
+    end
+
     context "when there is an error" do
       setup do
         FakeWeb.register_uri(
