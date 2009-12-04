@@ -1,0 +1,7 @@
+test:
+  user_token: testusertoken
+  api_password: testapipassword
+
+remote:
+  user_token: remoteusertoken
+  api_password: remoteapipassword
