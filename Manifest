@@ -1,0 +1,8 @@
+Manifest
+Rakefile
+lib/eroi.rb
+lib/eroi/client.rb
+lib/eroi/response.rb
+lib/eroi/version.rb
+test/eroi/client_test.rb
+test/test_helper.rb
