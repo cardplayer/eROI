@@ -11,6 +11,11 @@ module EROI
       @api_password = api_password
     end
 
+    def contact(email, options = {})
+      Request::Get.send(self,
+        { :contact => email }.merge(options))
+    end
+
     def add_contact(fields)
       Request::Post.send(self, build_contact_record(fields))
     end

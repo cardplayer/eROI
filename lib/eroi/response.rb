@@ -15,6 +15,12 @@ module EROI
         (@data['ErrorCode'] || @data['xml']) ? false : true
       end
 
+      def contact
+        @data['Retrieve']['Record']
+      end
+
+      alias :contacts :contact
+
       def error_message
         case @data['ErrorCode'].to_i
         when 1

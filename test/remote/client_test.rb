@@ -9,6 +9,21 @@ class TestClient < Test::Unit::TestCase
         @client = EROI.new(credentials[:user_token], credentials[:api_password])
       end
 
+      context "when finding a contact" do
+        should "respond with a success" do
+          @client.add_contact(
+            :email => 'longbob@longbob.com',
+            :firstname => 'Longbob',
+            :lastname => 'Longson',
+            :mailing_lists => 'TestList')
+
+          response = @client.contact('longbob@longbob.com', :mailing_lists => 'TestList')
+
+          assert_equal true, response.success?
+          assert_equal 'longbob@longbob.com', response.contact['Email']
+        end
+      end
+
       context "when adding a contact" do
         should "respond with a success" do
           response = @client.add_contact(

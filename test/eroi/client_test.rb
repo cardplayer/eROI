@@ -16,6 +16,18 @@ class TestClient < Test::Unit::TestCase
       FakeWeb.register_uri(
         :post, EROI::Request::Post::API_URL,
         :body => successful_post_response)
+      FakeWeb.register_uri(
+        :get, /#{EROI::Request::Get::API_URL}*/,
+        :body => successful_get_response)
+    end
+
+    context "when finding a contact" do
+      should "respond with a success" do
+        response = @client.contact('longbob@longbob.com', :mailing_lists => 'TestList')
+
+        assert_equal true, response.success?
+        assert_equal 'longbob@longbob.com', response.contact['Email']
+      end
     end
 
     context "when adding a contact" do
@@ -24,7 +36,7 @@ class TestClient < Test::Unit::TestCase
           :email => 'longbob@longbob.com',
           :firstname => 'Longbob',
           :lastname => 'Longson',
-          :mailing_lists => 'List1,List2')
+          :mailing_lists => 'TestList')
 
         assert_equal true, response.success?
         assert_equal 1, response.number_of_records
@@ -47,7 +59,7 @@ class TestClient < Test::Unit::TestCase
           :email => 'longbob@longbob.com',
           :firstname => 'Longbob',
           :lastname => 'Longson',
-          :mailing_lists => 'List1,List2')
+          :mailing_lists => 'TestList')
 
         assert_equal true, response.success?
         assert_equal 1, response.number_of_records
@@ -64,12 +76,6 @@ class TestClient < Test::Unit::TestCase
     end
 
     context "when retreiving user field definitions" do
-      setup do
-        FakeWeb.register_uri(
-          :get, /#{EROI::Request::Get::API_URL}*/,
-          :body => successful_get_response)
-      end
-
       should "respond with a success" do
         user_field_definitions = fixture(:user_field_definitions)
 
@@ -122,7 +128,7 @@ class TestClient < Test::Unit::TestCase
     "<Retrieve>
     <Record>
       <rec>523</rec>
-      <Email>someone@somecompany.com</Email>
+      <Email>longbob@longbob.com</Email>
       <Firstname>Joe</Firstname>
       <Lastname>Somebody</Lastname>
       <Company>Some Company</Company>
