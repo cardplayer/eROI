@@ -6,6 +6,11 @@ module EROI
   class Client
     attr_reader :user_token, :api_password
 
+    def self.api_available?
+      Request::Post.api_available? &&
+      Request::Get.api_available?
+    end
+
     def initialize(user_token, api_password)
       @user_token = user_token
       @api_password = api_password

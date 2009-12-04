@@ -9,6 +9,12 @@ class TestClient < Test::Unit::TestCase
         @client = EROI.new(credentials[:user_token], credentials[:api_password])
       end
 
+      context "when checking if the api is available" do
+        should "responsd with a a success" do
+          assert true, EROI::Client.api_available?
+        end
+      end
+
       context "when finding a contact" do
         should "respond with a success" do
           @client.add_contact(
