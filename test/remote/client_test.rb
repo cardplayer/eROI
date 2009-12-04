@@ -15,9 +15,9 @@ class TestClient < Test::Unit::TestCase
             :email => 'longbob@longbob.com',
             :firstname => 'Longbob',
             :lastname => 'Longson',
-            :mailing_lists => 'TestList')
+            :mailing_lists => 'MainList')
 
-          response = @client.contact('longbob@longbob.com', :mailing_lists => 'TestList')
+          response = @client.contact('longbob@longbob.com', :mailing_lists => 'MainList')
 
           assert_equal true, response.success?
           assert_equal 'longbob@longbob.com', response.contact['Email']
@@ -30,7 +30,7 @@ class TestClient < Test::Unit::TestCase
             :email => 'longbob@longbob.com',
             :firstname => 'Longbob',
             :lastname => 'Longson',
-            :mailing_lists => 'TestList')
+            :mailing_lists => 'MainList')
 
           assert_equal true, response.success?
           assert_equal 1, response.number_of_records
@@ -53,7 +53,7 @@ class TestClient < Test::Unit::TestCase
             :email => 'longbob@longbob.com',
             :firstname => 'Longbob',
             :lastname => 'Longson',
-            :mailing_lists => 'TestList')
+            :mailing_lists => 'MainList')
 
           assert_equal true, response.success?
           assert_equal 1, response.number_of_records
@@ -69,27 +69,13 @@ class TestClient < Test::Unit::TestCase
         end
       end
 
-      context "when retreiving user field definitions" do
-        should "respond with a success" do
-          user_field_definitions = fixture(:user_field_definitions)
-
-          response, user_fields = @client.user_field_definitions
-
-          assert_equal true, response.success?
-
-          user_field_definitions.each do |k,v|
-            assert_equal v, user_fields[k.to_s]
-          end
-        end
-      end
-
       context "when there is an error" do
         setup do
           @client = EROI.new('wrong', 'credentials')
         end
 
         should "respond with a failure" do
-          response, fields = @client.user_field_definitions
+          response, fields = @client.contact('longbob@longbob.com')
 
           assert_equal false, response.success?
         end

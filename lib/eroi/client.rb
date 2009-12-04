@@ -34,28 +34,6 @@ module EROI
         :clear_record => 1 ))
     end
 
-    def user_field_definitions
-      response = Request::Get.send(self,
-        :getUserFieldDefinitions => 1,
-        :SuppressContact => 1,
-        :SuppressContactData => 1)
-
-      if response.success?
-        fields = {}
-        response.data['Retrieve']['UserFieldDefinitions']['UserField'].each_with_index do |field,i|
-          if field.is_a?(String)
-            fields[field] = "User#{i + 1}"
-          else
-            fields[field['Field']] = "User#{i + 1}"
-          end
-        end
-
-        [ response, fields ]
-      else
-        [ response, {} ]
-      end
-    end
-
   private
 
     def build_contact_record(fields)

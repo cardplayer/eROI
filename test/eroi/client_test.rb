@@ -75,20 +75,6 @@ class TestClient < Test::Unit::TestCase
       end
     end
 
-    context "when retreiving user field definitions" do
-      should "respond with a success" do
-        user_field_definitions = fixture(:user_field_definitions)
-
-        response, user_fields = @client.user_field_definitions
-
-        assert_equal true, response.success?
-
-        user_field_definitions.each do |k,v|
-          assert_equal v, user_fields[k.to_s]
-        end
-      end
-    end
-
     context "when there is an error" do
       setup do
         FakeWeb.register_uri(
@@ -97,7 +83,7 @@ class TestClient < Test::Unit::TestCase
       end
 
       should "respond with a failure" do
-        response, fields = @client.user_field_definitions
+        response, fields = @client.contact('longbob@longbob.com')
 
         assert_equal false, response.success?
       end
@@ -120,12 +106,8 @@ class TestClient < Test::Unit::TestCase
   end
   
   def successful_get_response
-    user_field_definitions = fixture(:user_field_definitions)
-    fields = user_field_definitions.collect { |k,v|
-      "<UserField Field='#{v}' Type='Text'>#{k.to_s}</UserField>"
-    }.join("\n")
-
-    "<Retrieve>
+    <<-EOF
+  <Retrieve>
     <Record>
       <rec>523</rec>
       <Email>longbob@longbob.com</Email>
@@ -144,8 +126,8 @@ class TestClient < Test::Unit::TestCase
       </Edition>
       <Event id='1' ListEdition='somelist_someedition' Date='2003-Nov-11'>Sent</Event>
     </Record>
-    <UserFieldDefinitions>#{fields}</UserFieldDefinitions>
-   </Retrieve>"
+  </Retrieve>
+    EOF
   end
   
   def unsuccessful_get_response(code = 1)
