@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
      "README.rdoc",
      "Rakefile",
      "VERSION",
+     "eroi.gemspec",
      "lib/eroi.rb",
      "lib/eroi/client.rb",
      "lib/eroi/response.rb",
