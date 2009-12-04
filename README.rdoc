@@ -2,6 +2,8 @@
 
 API interface to eROI.
 
+This gem only contains contact management. If you need more support, please fork and add it.
+
 == Note on Patches/Pull Requests
  
 * Fork the project.
