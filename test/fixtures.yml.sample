@@ -5,3 +5,7 @@ test:
 remote:
   user_token: remoteusertoken
   api_password: remoteapipassword
+
+user_field_definitions:
+  User1: Age
+  User1: Gender

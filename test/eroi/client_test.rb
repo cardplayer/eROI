@@ -3,16 +3,18 @@ require File.join(File.dirname(__FILE__), '..', 'test_helper.rb')
 class TestClient < Test::Unit::TestCase
   context "client module" do
     should "create a new eroi client" do
-      client = EROI.new(user_token, api_password)
+      credentials = fixture(:test)
+      client = EROI.new(credentials[:user_token], credentials[:api_password])
       assert_equal EROI::Client, client.class
     end
   end
 
   context "using the eroi client" do
     setup do
-      @client = EROI.new(user_token, api_password)
+      credentials = fixture(:test)
+      @client = EROI.new(credentials[:user_token], credentials[:api_password])
       FakeWeb.register_uri(
-        :post, EROI::Client::POST_API_URL,
+        :post, EROI::Request::Post::API_URL,
         :body => successful_post_response)
     end
 
@@ -64,24 +66,27 @@ class TestClient < Test::Unit::TestCase
     context "when retreiving user field definitions" do
       setup do
         FakeWeb.register_uri(
-          :get, /#{EROI::Client::GET_API_URL}*/,
+          :get, /#{EROI::Request::Get::API_URL}*/,
           :body => successful_get_response)
       end
 
       should "respond with a success" do
+        user_field_definitions = fixture(:user_field_definitions)
+
         response, user_fields = @client.user_field_definitions
 
-        expected_fields = { 'State' => 'User1', 'City' => 'User2' }
-
         assert_equal true, response.success?
-        assert_equal expected_fields, user_fields
+
+        user_field_definitions.each do |k,v|
+          assert_equal v, user_fields[k.to_s]
+        end
       end
     end
 
     context "when there is an error" do
       setup do
         FakeWeb.register_uri(
-          :get, /#{EROI::Client::GET_API_URL}*/,
+          :get, /#{EROI::Request::Get::API_URL}*/,
           :body => unsuccessful_get_response(1))
       end
 
@@ -89,8 +94,55 @@ class TestClient < Test::Unit::TestCase
         response, fields = @client.user_field_definitions
 
         assert_equal false, response.success?
-        assert /Invalid/ =~ response.error_message
       end
     end
+  end
+
+  def successful_post_response
+    <<-EOF
+  <Compiled>Yes</Compiled>
+  <DBConnect>OK</DBConnect>
+  <EditionSuccess>MailingListName_someEditionName</EditionSuccess>
+  <ImportRecords>1</ImportRecords>
+  <ExistingRecords>1526</ExistingRecords>
+  <FinalCompleted>1</FinalCompleted>
+  <Duplicates>1</Duplicates>
+  <InvalidLists>0</InvalidLists>
+  <Triggers></Triggers>
+  <XMLUpload>Complete</XMLUpload>
+    EOF
+  end
+  
+  def successful_get_response
+    user_field_definitions = fixture(:user_field_definitions)
+    fields = user_field_definitions.collect { |k,v|
+      "<UserField Field='#{v}' Type='Text'>#{k.to_s}</UserField>"
+    }.join("\n")
+
+    "<Retrieve>
+    <Record>
+      <rec>523</rec>
+      <Email>someone@somecompany.com</Email>
+      <Firstname>Joe</Firstname>
+      <Lastname>Somebody</Lastname>
+      <Company>Some Company</Company>
+      <User1>some data here</User1>
+      <User2>We'll put more data here</User2>
+      <Notes>And we'll put more notes here</Notes>
+      <Edition Name='SomeEdition'>
+        <Sent Format='YYYYMMDDhhmm'>20030913143010</Sent>
+        <Read>5</Read>
+        <Click URL='http://www.somelink.com'>3</Click>
+        <Click URL='http://www.anotherlink.com/page.htm'>1</Click>
+        <S2F>2</S2F>
+      </Edition>
+      <Event id='1' ListEdition='somelist_someedition' Date='2003-Nov-11'>Sent</Event>
+    </Record>
+    <UserFieldDefinitions>#{fields}</UserFieldDefinitions>
+   </Retrieve>"
+  end
+  
+  def unsuccessful_get_response(code = 1)
+    "<xml><error>Unable to authorize supplied username and password</error></xml>"
   end
 end

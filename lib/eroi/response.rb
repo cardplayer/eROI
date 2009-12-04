@@ -12,7 +12,7 @@ module EROI
 
     class Get < Base
       def success?
-        !@data['ErrorCode']
+        (@data['ErrorCode'] || @data['xml']) ? false : true
       end
 
       def error_message
@@ -29,13 +29,13 @@ module EROI
 
     class Post < Base
       def success?
-        @data['Compiled'] == 'Yes' &&
-        @data['DBConnect'] == 'OK' &&
-        @data['XMLUpload'] == 'Complete'
+        @data['Response']['Compiled'] == 'Yes' &&
+        @data['Response']['DBConnect'] == 'OK' &&
+        @data['Response']['XMLUpload'] == 'Complete'
       end
 
       def number_of_records
-        @data['ImportRecords'].to_i
+        @data['Response']['ImportRecords'].to_i
       end
     end
   end
