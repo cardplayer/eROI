@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{eroi}
-  s.version = "0.0.1"
+  s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["CardPlayer"]
-  s.date = %q{2009-12-03}
+  s.date = %q{2009-12-04}
   s.description = %q{API interface to eROI.}
   s.email = %q{techteam@cardplayer.com}
   s.extra_rdoc_files = [
@@ -17,7 +17,8 @@ Gem::Specification.new do |s|
      "README.rdoc"
   ]
   s.files = [
-    "LICENSE",
+    ".gitignore",
+     "LICENSE",
      "Manifest",
      "README.rdoc",
      "Rakefile",
@@ -25,9 +26,12 @@ Gem::Specification.new do |s|
      "eroi.gemspec",
      "lib/eroi.rb",
      "lib/eroi/client.rb",
+     "lib/eroi/request.rb",
      "lib/eroi/response.rb",
      "lib/eroi/version.rb",
      "test/eroi/client_test.rb",
+     "test/fixtures.yml.sample",
+     "test/remote/client_test.rb",
      "test/test_helper.rb"
   ]
   s.homepage = %q{http://github.com/cardplayer/eroi}
@@ -37,6 +41,7 @@ Gem::Specification.new do |s|
   s.summary = %q{API interface to eROI.}
   s.test_files = [
     "test/eroi/client_test.rb",
+     "test/remote/client_test.rb",
      "test/test_helper.rb"
   ]
 
