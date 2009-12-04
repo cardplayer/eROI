@@ -25,6 +25,10 @@ class TestClient < Test::Unit::TestCase
       end
 
       context "when adding a contact" do
+        teardown do
+          @client.remove_contact('longbob@boblong.com')
+        end
+
         should "respond with a success" do
           response = @client.add_contact(
             :email => 'longbob@longbob.com',
@@ -38,7 +42,18 @@ class TestClient < Test::Unit::TestCase
       end
 
       context "when changing a contact's email" do
+        teardown do
+          @client.remove_contact('longbob@longbob.com')
+          @client.remove_contact('longbob@boblong.com')
+        end
+
         should "respond with a success" do
+          @client.add_contact(
+            :email => 'longbob@longbob.com',
+            :firstname => 'Longbob',
+            :lastname => 'Longson',
+            :mailing_lists => 'MainList')
+
           response = @client.change_contact_email(
             'longbob@longbob.com', 'longbob@boblong.com')
 
@@ -48,7 +63,17 @@ class TestClient < Test::Unit::TestCase
       end
 
       context "when updating a contact" do
+        teardown do
+          @client.remove_contact('longbob@longbob.com')
+        end
+
         should "respond with a success" do
+          @client.add_contact(
+            :email => 'longbob@longbob.com',
+            :firstname => 'Longbob',
+            :lastname => 'Longson',
+            :mailing_lists => 'MainList')
+
           response = @client.update_contact(
             :email => 'longbob@longbob.com',
             :firstname => 'Longbob',
