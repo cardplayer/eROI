@@ -102,17 +102,17 @@ class TestClient < Test::Unit::TestCase
 
       context "when sending an email to a contact" do
         teardown do
-          # @client.remove_contact('longbob@longbob.com')
+          @client.remove_contact('longbob@longbob.com')
         end
 
         should "respond with a success" do
           @client.add_contact(
-            :email => 'russ@bashme.org',
+            :email => 'longbob@longbob.com'
             :firstname => 'Longbob',
             :lastname => 'Longson',
             :mailing_lists => 'MainList')
 
-          response = @client.send_list_edition_to_contact('MainList', 'Testing', 'russ@bashme.org')
+          response = @client.send_list_edition_to_contact('MainList', 'Testing', 'longbob@longbob.com')
 
           assert_equal true, response.success?
         end
