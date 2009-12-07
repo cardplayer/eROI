@@ -47,6 +47,28 @@ class TestClient < Test::Unit::TestCase
         end
       end
 
+      context "when adding contacts" do
+        teardown do
+          @client.remove_contact('longbob@longbob.com')
+          @client.remove_contact('shortbob@shortbob.com')
+        end
+
+        should "respond with a success" do
+          response = @client.add_contacts(
+            [{ :email => 'longbob@longbob.com',
+               :firstname => 'Longbob',
+               :lastname => 'Longson',
+               :mailing_lists => 'TestList' },
+             { :email => 'shortbob@shortbob.com',
+               :firstname => 'Shortbob',
+               :lastname => 'Shortson',
+                :mainling_lists => 'TestList' }])
+
+          assert_equal true, response.success?
+          assert_equal 2, response.number_of_records
+        end
+      end
+
       context "when changing a contact's email" do
         teardown do
           @client.remove_contact('longbob@longbob.com')
@@ -91,6 +113,40 @@ class TestClient < Test::Unit::TestCase
         end
       end
 
+      context "when updating contacts" do
+        teardown do
+          @client.remove_contact('longbob@longbob.com')
+          @client.remove_contact('shortbob@shortbob.com')
+        end
+
+        should "respond with a success" do
+          @client.add_contact(
+            :email => 'longbob@longbob.com',
+            :firstname => 'Longbob',
+            :lastname => 'Longson',
+            :mailing_lists => 'MainList')
+
+          @client.add_contact(
+            :email => 'shortbob@shortbob.com',
+            :firstname => 'Shortbob',
+            :lastname => 'Shortson',
+            :mailing_lists => 'MainList')
+
+          response = @client.update_contacts(
+            [{ :email => 'longbob@longbob.com',
+               :firstname => 'Shortbob',
+               :lastname => 'Shortson',
+               :mailing_lists => 'TestList' },
+             { :email => 'shortbob@shortbob.com',
+               :firstname => 'Longbob',
+               :lastname => 'Longson',
+               :mainling_lists => 'TestList' }])
+
+          assert_equal true, response.success?
+          assert_equal 2, response.number_of_records
+        end
+      end
+
       context "when removing a contact" do
         should "respond with a success" do
           response = @client.remove_contact('longbob@longbob.com')
@@ -107,7 +163,7 @@ class TestClient < Test::Unit::TestCase
 
         should "respond with a success" do
           @client.add_contact(
-            :email => 'longbob@longbob.com'
+            :email => 'longbob@longbob.com',
             :firstname => 'Longbob',
             :lastname => 'Longson',
             :mailing_lists => 'MainList')

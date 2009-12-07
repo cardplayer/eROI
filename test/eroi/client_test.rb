@@ -43,6 +43,22 @@ class TestClient < Test::Unit::TestCase
       end
     end
 
+    context "when adding contacts" do
+      should "respond with a success" do
+        response = @client.add_contacts(
+          [{ :email => 'longbob@longbob.com',
+             :firstname => 'Longbob',
+             :lastname => 'Longson',
+             :mailing_lists => 'TestList' },
+           { :email => 'shortbob@shortbob.com',
+             :firstname => 'Shortbob',
+             :lastname => 'Shortson',
+             :mainling_lists => 'TestList' }])
+
+        assert_equal true, response.success?
+      end
+    end
+
     context "when changing a contact's email" do
       should "respond with a success" do
         response = @client.change_contact_email(
@@ -60,6 +76,23 @@ class TestClient < Test::Unit::TestCase
           :firstname => 'Longbob',
           :lastname => 'Longson',
           :mailing_lists => 'TestList')
+
+        assert_equal true, response.success?
+        assert_equal 1, response.number_of_records
+      end
+    end
+
+    context "when updating contacts" do
+      should "respond with a success" do
+        response = @client.update_contacts(
+          [{ :email => 'longbob@longbob.com',
+             :firstname => 'Shortbob',
+             :lastname => 'Shortson',
+             :mailing_lists => 'TestList' },
+           { :email => 'shortbob@shortbob.com',
+             :firstname => 'Longbob',
+             :lastname => 'Longson',
+             :mainling_lists => 'TestList' }])
 
         assert_equal true, response.success?
         assert_equal 1, response.number_of_records

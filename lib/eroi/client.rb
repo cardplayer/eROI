@@ -27,6 +27,13 @@ module EROI
 
     alias :update_contact :add_contact
 
+    def add_contacts(records)
+      records = records.collect { |r| build_contact_record(r) }
+      Request::Post.send(self, records)
+    end
+
+    alias :update_contacts :add_contacts
+
     def change_contact_email(current_email, new_email)
       Request::Post.send(self, build_contact_record(
         :email => current_email,
