@@ -46,11 +46,11 @@ module EROI
         :clear_record => 1 ))
     end
 
-    def define_list(list, records)
+    def define_list(list, emails)
       xml = Builder::XmlMarkup.new
       xml.tag!('DefineMailingList', 'list' => list) do |x|
-        records.each do |r|
-          x.tag!('Email', r.email)
+        emails.each do |email|
+          x.tag!('Email', email)
         end
       end
 

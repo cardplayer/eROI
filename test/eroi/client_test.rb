@@ -108,6 +108,15 @@ class TestClient < Test::Unit::TestCase
       end
     end
 
+    context "when defining a list" do
+      should "respond with a success" do
+        response = @client.define_list('TestList', [ 'longbob@longbob.com' ])
+
+        assert_equal true, response.success?
+        assert_equal 1, response.number_of_records
+      end
+    end
+
     context "when sending an edition" do
       setup do
         @xml = mock('Builder::XmlMarkup')

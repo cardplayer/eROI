@@ -156,6 +156,22 @@ class TestClient < Test::Unit::TestCase
         end
       end
 
+      context "when defining a list" do
+        teardown do
+          @client.remove_contact('longbob@longbob.com')
+          @client.remove_contact('shortbob@shortbob.com')
+        end
+
+        should "respond with a success" do
+          response = @client.define_list(
+            'TestList',
+            [ 'longbob@longbob.com', 'shortbob@shortbob.com' ])
+
+          assert_equal true, response.success?
+          assert_equal 2, response.number_of_records
+        end
+      end
+
       context "when sending an email to a contact" do
         teardown do
           @client.remove_contact('longbob@longbob.com')
