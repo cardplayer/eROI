@@ -108,12 +108,74 @@ class TestClient < Test::Unit::TestCase
       end
     end
 
-    context "when sending an email to a contact" do
-      should "respond with a success" do
-        response = @client.send_list_edition_to_contact('TestList', 'test', 'longbob@longbob.com')
+    context "when sending an edition" do
+      setup do
+        @xml = mock('Builder::XmlMarkup')
+      end
 
-        assert_equal true, response.success?
-        assert_equal 1, response.number_of_records
+      context "when edition is meant for all contacts" do
+        should "respond with a success" do
+          @broadcast = 'Broadcast All'
+          @xml.expects('tag!').with('Send', @broadcast, 'List' => 'TestList', 'Edition' => 'test')
+          Builder::XmlMarkup.expects(:new).at_least_once.returns(@xml)
+
+          response = @client.send_list_edition('TestList', 'test', @broadcast)
+
+          assert_equal true, response.success?
+          assert_equal 1, response.number_of_records
+        end
+      end
+
+      context "when edition is meant for unsent contacts" do
+        should "respond with a success" do
+          @broadcast = 'Broadcast Unsent'
+          @xml.expects('tag!').with('Send', @broadcast, 'List' => 'TestList', 'Edition' => 'test')
+          Builder::XmlMarkup.expects(:new).at_least_once.returns(@xml)
+
+          response = @client.send_list_edition('TestList', 'test', @broadcast)
+
+          assert_equal true, response.success?
+          assert_equal 1, response.number_of_records
+        end
+      end
+
+      context "when edition is meant for random unsent contacts" do
+        should "respond with a success" do
+          @broadcast = 'Broadcast 200'
+          @xml.expects('tag!').with('Send', @broadcast, 'List' => 'TestList', 'Edition' => 'test')
+          Builder::XmlMarkup.expects(:new).at_least_once.returns(@xml)
+
+          response = @client.send_list_edition('TestList', 'test', @broadcast)
+
+          assert_equal true, response.success?
+          assert_equal 1, response.number_of_records
+        end
+      end
+
+      context "when edition is meant for a single contact" do
+        should "respond with a success" do
+          @broadcast = 'longbob@longbob.com'
+          @xml.expects('tag!').with('Send', @broadcast, 'List' => 'TestList', 'Edition' => 'test')
+          Builder::XmlMarkup.expects(:new).at_least_once.returns(@xml)
+
+          response = @client.send_list_edition('TestList', 'test', @broadcast)
+
+          assert_equal true, response.success?
+          assert_equal 1, response.number_of_records
+        end
+      end
+
+      context "when edition is meant for multiple contacts" do
+        should "respond with a success" do
+          @broadcast = [ 'longbob@longbob.com', 'shortbob@shortbob.com' ]
+          @xml.expects('tag!').with('Send', @broadcast.join(','), 'List' => 'TestList', 'Edition' => 'test')
+          Builder::XmlMarkup.expects(:new).at_least_once.returns(@xml)
+
+          response = @client.send_list_edition('TestList', 'test', @broadcast)
+
+          assert_equal true, response.success?
+          assert_equal 1, response.number_of_records
+        end
       end
     end
 

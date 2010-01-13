@@ -168,7 +168,7 @@ class TestClient < Test::Unit::TestCase
             :lastname => 'Longson',
             :mailing_lists => 'MainList')
 
-          response = @client.send_list_edition_to_contact('MainList', 'Testing', 'longbob@longbob.com')
+          response = @client.send_list_edition('MainList', 'Testing', 'longbob@longbob.com')
 
           assert_equal true, response.success?
         end

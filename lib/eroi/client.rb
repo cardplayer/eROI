@@ -46,16 +46,34 @@ module EROI
         :clear_record => 1 ))
     end
 
-    def send_list_edition_to_contact(list, edition, email)
-      emails = ((email.is_a?(String)) ? [ email ] : email).join(',')
-
+    def define_list(list, records)
       xml = Builder::XmlMarkup.new
-      xml.tag!('Send', emails, 'List' => list, 'Edition' => edition)
+      xml.tag!('DefineMailingList', 'list' => list) do |x|
+        records.each do |r|
+          x.tag!('Email', r.email)
+        end
+      end
 
       Request::Post.send(self, xml)
     end
 
-    alias :send_list_edition_to_contacts :send_list_edition_to_contact
+    # Sends a list edition to specified broadcast.
+    # 
+    # Who can consist of the following:
+    #   * Broadcast All - sends to all members of the list, regardless of whether they have already received this edition
+    #   * Broadcast Unsent - sends to all members of the list who have not yet received this edition
+    #   * Broadcast ### - sends to ### random recipients who have not yet received this edition
+    #   * A comma seperated list of emails.
+    def send_list_edition(list, edition, who)
+      xml = Builder::XmlMarkup.new
+      xml.tag!(
+        'Send',
+        ((who.is_a?(String)) ? [ who ] : who).join(','),
+        'List' => list,
+        'Edition' => edition)
+
+      Request::Post.send(self, xml)
+    end
 
   private
 
